@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MusicPlayer</title>
+    <link rel="stylesheet" href="musicstyle.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Varela Round">
+    <script src="https://kit.fontawesome.com/9acf1786bb.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="music-player">
+            <img src="giorno.png" class="song-img">
+            <h1>il vento d'oro</h1>
+            <p>Yugo Kanno</p>
+
+            <div class="visualizer-container">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <audio id="song">
+                <source src="spotifydown.com - il vento d'oro.mp3" type="audio/mpeg">
+            </audio>
+            <div class="controls2">
+                <i class="fa-solid fa-repeat" id="loop"></i>
+                <input type="range" value="0" id="progress">
+                <input type="range" value="100" id="volume-slider">
+                <i class="fa-solid fa-volume-high" id="volume"></i>
+            </div>
+
+
+            <div class="controls">
+                    <div><i class="fa-solid fa-backward"></i></div>
+                    <div onclick="playPause()"><i class="fa-solid fa-play" id="ctrlIcon"></i></div>
+                    <div><i class="fa-solid fa-forward"></i></div>
+            </div>
+
+        </div>
+    </div>
+    
+    <script>
+
+        let progress = document.getElementById("progress");
+        let song = document.getElementById("song");
+        let ctrlIcon = document.getElementById("ctrlIcon");
+        let forwardIcon = document.querySelector(".fa-forward");
+        let backwardIcon = document.querySelector(".fa-backward");
+        let volumeIcon = document.getElementById("volume");
+let volumeSlider = document.getElementById("volume-slider");
+
+volumeIcon.addEventListener("click", function() {
+    volumeSlider.classList.toggle("active");
+});
+
+volumeSlider.addEventListener("input", function() {
+    let volume = volumeSlider.value / 100;
+    song.volume = volume;
+});
+let loopIcon = document.getElementById("loop");
+loopIcon.addEventListener("click", toggleLoop);
+
+function toggleLoop() {
+    song.loop = !song.loop;
+    loopIcon.classList.toggle("active", song.loop);
+}
+
+song.onloadedmetadata = function(){
+    progress.max = song.duration;
+    progress.value = song.currentTime;
+}
+
+function playPause(){
+    if(ctrlIcon.classList.contains("fa-pause")){
+        song.pause();
+        ctrlIcon.classList.remove("fa-pause");
+        ctrlIcon.classList.add("fa-play");
+    }
+    else{
+        song.play();
+        ctrlIcon.classList.add("fa-pause");
+        ctrlIcon.classList.remove("fa-play");
+    }
+}
+
+let interval;
+
+song.onplay = function() {
+    interval = setInterval(() => {
+        progress.value = song.currentTime;
+    }, 500);
+};
+
+song.onpause = function() {
+    clearInterval(interval);
+};
+
+progress.onchange = function(){
+    song.play();
+    song.currentTime = progress.value;
+    ctrlIcon.classList.add("fa-pause");
+    ctrlIcon.classList.remove("fa-play");
+}
+
+forwardIcon.addEventListener("click", skipForward);
+backwardIcon.addEventListener("click", skipBackward);
+
+function skipForward() {
+    if (song.currentTime < song.duration - 10) {
+        song.currentTime += 10;
+    }
+}
+function skipBackward() {
+    if (song.currentTime >= 5) {
+        song.currentTime -= 5; 
+    } else {
+        song.currentTime = 0;
+    }
+}
+
+
+    </script>
+    
+</body>
+</html>
